@@ -49,20 +49,23 @@ export default function SearchPanel({ onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 md:p-10 bg-black/70 backdrop-blur-sm animate-rise-in">
-      <div className="glass rounded-3xl w-full max-w-3xl max-h-[80vh] flex flex-col overflow-hidden">
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-          <Search className="w-5 h-5 text-white/60" />
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 md:p-10 bg-black/80 backdrop-blur-sm">
+      <div
+        className="w-full max-w-3xl max-h-[80vh] flex flex-col overflow-hidden rounded-2xl"
+        style={{ background: '#141414', border: '1px solid #2a2a2a' }}
+      >
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-[#2a2a2a]">
+          <Search className="w-5 h-5 text-[#666]" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="搜索歌曲 / 歌手 / 专辑…"
-            className="flex-1 bg-transparent outline-none text-lg placeholder:text-white/30"
+            className="flex-1 bg-transparent outline-none text-lg text-[#e8e4df] placeholder:text-[#444]"
           />
           <button
             onClick={onClose}
-            className="text-white/50 hover:text-white transition"
+            className="text-[#666] hover:text-[#e8e4df] transition"
             aria-label="close"
           >
             <X className="w-5 h-5" />
@@ -71,23 +74,23 @@ export default function SearchPanel({ onClose }: Props) {
 
         <div className="overflow-y-auto flex-1 p-2 md:p-3">
           {loading && (
-            <div className="flex items-center justify-center py-10 text-white/50">
+            <div className="flex items-center justify-center py-10 text-[#666]">
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
               搜索中…
             </div>
           )}
           {!loading && query && results.length === 0 && (
-            <div className="py-10 text-center text-white/50 text-sm">没有找到相关歌曲</div>
+            <div className="py-10 text-center text-[#666] text-sm">没有找到相关歌曲</div>
           )}
           <div className="flex flex-col">
             {results.map((s, idx) => (
               <button
                 key={s.id}
                 onClick={() => playNow(s)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition text-left group"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#1a1a1a] transition text-left group"
               >
-                <div className="w-8 text-sm text-white/40 tabular-nums">{idx + 1}</div>
-                <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 text-sm text-[#666] tabular-nums">{idx + 1}</div>
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#1a1a1a] flex items-center justify-center flex-shrink-0">
                   {s.album?.picUrl ? (
                     <img
                       src={s.album.picUrl}
@@ -96,18 +99,18 @@ export default function SearchPanel({ onClose }: Props) {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <Music2 className="w-4 h-4 text-white/30" />
+                    <Music2 className="w-4 h-4 text-[#444]" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="truncate text-white group-hover:text-gradient-vibes">
+                  <div className="truncate text-[#e8e4df] group-hover:text-[#c9a96e]">
                     {s.name}
                   </div>
-                  <div className="truncate text-xs text-white/50">
+                  <div className="truncate text-xs text-[#666]">
                     {s.artists?.map((a) => a.name).join(' / ')} · {s.album?.name}
                   </div>
                 </div>
-                <div className="text-xs text-white/40 tabular-nums">
+                <div className="text-xs text-[#666] tabular-nums">
                   {formatDuration(s.duration)}
                 </div>
               </button>

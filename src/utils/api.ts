@@ -75,6 +75,10 @@ export const api = {
   // 歌词
   lyric: (id: string | number) =>
     get<{ success: boolean; lrc?: { lyric: string }; klyric?: { lyric: string } }>('/api/lyric', { id }),
+
+  // 解析分享 URL
+  parseShare: (url: string) =>
+    get<{ success: boolean; type: 'song' | 'playlist' | 'album'; data: any }>('/api/parse/share', { url }),
 };
 
 export const formatDuration = (ms: number) => {

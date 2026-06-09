@@ -272,6 +272,80 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'ok' });
 });
 
+// 解析网易云分享 URL
+app.get('/api/parse/share', async (req: Request, res: Response) => {
+  try {
+    const { url } = req.query;
+    if (!url || typeof url !== 'string') {
+      res.status(400).json({ success: false, error: 'Missing url parameter' });
+      return;
+    }
+
+    // 解析 URL 提取类型和 ID
+    let id: string = '';
+    let type: 'song' | 'playlist' | 'album' = 'song';
+
+    try {
+      const parsed = new URL(url);
+      const path = parsed.pathname;
+
+      if (path.includes('/song/')) {
+        type = 'song';
+        // 处理 /song/{id} 格式
+        const match = path.match(/\/song\/(\d+)/);
+        id = match ? match[1] : parsed.searchParams.get('id') || '';
+      } else if (path.includes('/playlist/')) {
+        type = 'playlist';
+        const match = path.match(/\/playlist\/(\d+)/);
+        id = match ? match[1] : parsed.searchParams.get('id') || '';
+      } else if (path.includes('/album/')) {
+        type = 'album';
+        const match = path.match(/\/album\/(\d+)/);
+        id = match ? match[1] : parsed.searchParams.get('id') || '';
+      } else {
+        // fallback: 从 searchParams 获取 id
+        id = parsed.searchParams.get('id') || '';
+        if (id) {
+          // 根据是否有 song 关键字判断
+          type = url.includes('song') ? 'song' : url.includes('playlist') ? 'playlist' : 'album';
+        }
+      }
+    } catch {
+      // URL 解析失败，尝试从字符串中提取 id
+      const idMatch = url.match(/[?&]id=(\d+)/) || url.match(/\/(\d+)$/);
+      if (idMatch) {
+        id = idMatch[1];
+        type = url.includes('playlist') ? 'playlist' : url.includes('album') ? 'album' : 'song';
+      }
+    }
+
+    if (!id) {
+      res.status(400).json({ success: false, error: 'Invalid URL: cannot extract id' });
+      return;
+    }
+
+    // 根据类型获取详细信息
+    if (type === 'song') {
+      const data: any = await nc(song_detail, { ids: id }, req, res);
+      const songs = data?.songs || [];
+      if (songs.length > 0) {
+        res.json({ success: true, type: 'song', data: songs[0] });
+      } else {
+        res.status(404).json({ success: false, error: 'Song not found' });
+      }
+    } else if (type === 'playlist') {
+      const data: any = await nc(playlist_detail, { id }, req, res);
+      res.json({ success: true, type: 'playlist', data: data?.playlist || data });
+    } else if (type === 'album') {
+      // 专辑使用 playlist_track_all 或专用专辑接口
+      const data: any = await nc(playlist_track_all, { id, limit: 50 }, req, res);
+      res.json({ success: true, type: 'album', data: { tracks: data?.songs || [] } });
+    }
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.use((req: Request, res: Response) => {
   res.status(404).json({ success: false, error: `API not found: ${req.path}` });
 });
