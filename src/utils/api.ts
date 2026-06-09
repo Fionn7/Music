@@ -41,8 +41,9 @@ export interface UserProfile {
 export const api = {
   // 登录
   qrKey: () => get<{ success: boolean; unikey: string }>('/api/qr/key'),
-  qrCreate: (key: string) => get<{ success: boolean; qrimg: string }>('/api/qr/create', { key }),
-  qrCheck: (key: string) => get<{ success: boolean; code: number; message?: string }>('/api/qr/check', { key }),
+  // 后端仅返回 qrurl；前端用 qrcode 库在浏览器端生成图片
+  qrCreate: (key: string) => get<{ success: boolean; qrurl: string; qrimg?: string }>('/api/qr/create', { key }),
+  qrCheck: (key: string) => get<{ success: boolean; code: number; message?: string; cookie?: string }>('/api/qr/check', { key }),
   loginStatus: () =>
     get<{
       success: boolean;
@@ -74,6 +75,10 @@ export const api = {
   // 歌词
   lyric: (id: string | number) =>
     get<{ success: boolean; lrc?: { lyric: string }; klyric?: { lyric: string } }>('/api/lyric', { id }),
+
+  // 解析分享 URL
+  parseShare: (url: string) =>
+    get<{ success: boolean; type: 'song' | 'playlist' | 'album'; data: any }>('/api/parse/share', { url }),
 };
 
 export const formatDuration = (ms: number) => {

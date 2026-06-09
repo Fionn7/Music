@@ -92,13 +92,16 @@ export default function Player() {
 
       {/* 底部固定播放器 */}
       <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pt-2">
-        <div className="glass rounded-2xl px-4 py-3 md:px-6 md:py-4 shadow-glow">
+        <div
+          className="rounded-2xl px-4 py-3 md:px-6 md:py-4"
+          style={{ background: '#141414', border: '1px solid #2a2a2a', boxShadow: '0 -4px 24px rgba(0,0,0,0.3)' }}
+        >
           <div className="grid grid-cols-12 items-center gap-4">
             {/* 左侧：当前歌曲信息 */}
             <div className="col-span-12 md:col-span-3 flex items-center gap-3 min-w-0">
               <div className="relative flex-shrink-0">
                 <div
-                  className={`w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden bg-gradient-vibes flex items-center justify-center ${
+                  className={`w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden bg-[#1a1a1a] flex items-center justify-center ${
                     isPlaying ? 'animate-spin-slow' : ''
                   }`}
                   style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
@@ -111,15 +114,15 @@ export default function Player() {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <Music2 className="w-6 h-6 text-white/90" />
+                    <Music2 className="w-6 h-6 text-[#444]" />
                   )}
                 </div>
               </div>
               <div className="min-w-0">
-                <div className="text-sm font-semibold truncate text-white">
+                <div className="text-sm font-medium truncate text-[#e8e4df]">
                   {currentSong?.name || '未选择歌曲'}
                 </div>
-                <div className="text-xs text-white/50 truncate">{artistNames || '—'}</div>
+                <div className="text-xs text-[#666] truncate">{artistNames || '—'}</div>
               </div>
             </div>
 
@@ -128,7 +131,7 @@ export default function Player() {
               <div className="flex items-center gap-5">
                 <button
                   onClick={prev}
-                  className="text-white/70 hover:text-white transition"
+                  className="text-[#666] hover:text-[#e8e4df] transition"
                   aria-label="prev"
                 >
                   <SkipBack className="w-5 h-5" />
@@ -136,36 +139,36 @@ export default function Player() {
                 <button
                   onClick={toggle}
                   disabled={!currentUrl}
-                  className="w-11 h-11 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition disabled:opacity-40 shadow-lg"
+                  className="w-11 h-11 rounded-full flex items-center justify-center hover:scale-105 transition disabled:opacity-40"
+                  style={{ background: '#c9a96e', color: '#0d0d0d' }}
                   aria-label="play/pause"
                 >
                   {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
                 </button>
                 <button
                   onClick={next}
-                  className="text-white/70 hover:text-white transition"
+                  className="text-[#666] hover:text-[#e8e4df] transition"
                   aria-label="next"
                 >
                   <SkipForward className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="w-full flex items-center gap-2 text-xs text-white/50">
+              <div className="w-full flex items-center gap-2 text-xs text-[#666]">
                 <span className="w-10 text-right tabular-nums">{formatCurrentTime(currentTime)}</span>
                 <div
                   ref={progressRef}
                   onClick={onSeekClick}
-                  className="flex-1 h-1.5 bg-white/10 rounded-full cursor-pointer group relative"
+                  className="flex-1 h-1.5 rounded-full cursor-pointer group relative"
+                  style={{ background: '#2a2a2a' }}
                 >
                   <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-vibes transition-[width] duration-150"
-                    style={{
-                      width: duration ? `${(currentTime / duration) * 100}%` : '0%',
-                    }}
+                    className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-150"
+                    style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%', background: '#c9a96e' }}
                   />
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white opacity-0 group-hover:opacity-100 transition"
-                    style={{ left: duration ? `${(currentTime / duration) * 100}%` : '0%' }}
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition"
+                    style={{ left: duration ? `${(currentTime / duration) * 100}%` : '0%', background: '#c9a96e' }}
                   />
                 </div>
                 <span className="w-10 tabular-nums">
@@ -177,17 +180,18 @@ export default function Player() {
             {/* 右侧：音量 */}
             <div className="hidden md:flex col-span-3 items-center justify-end gap-2">
               {volume === 0 ? (
-                <VolumeX className="w-4 h-4 text-white/60" />
+                <VolumeX className="w-4 h-4 text-[#666]" />
               ) : (
-                <Volume2 className="w-4 h-4 text-white/60" />
+                <Volume2 className="w-4 h-4 text-[#666]" />
               )}
               <div
                 onClick={onVolumeClick}
-                className="w-28 h-1.5 bg-white/10 rounded-full cursor-pointer group relative"
+                className="w-28 h-1.5 rounded-full cursor-pointer group relative"
+                style={{ background: '#2a2a2a' }}
               >
                 <div
-                  className="absolute inset-y-0 left-0 rounded-full bg-white/80"
-                  style={{ width: `${volume * 100}%` }}
+                  className="absolute inset-y-0 left-0 rounded-full"
+                  style={{ width: `${volume * 100}%`, background: '#c9a96e' }}
                 />
               </div>
             </div>
